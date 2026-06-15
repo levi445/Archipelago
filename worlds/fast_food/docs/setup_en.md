@@ -6,45 +6,49 @@ Fast Foodipelago is a real-life Archipelago experience. You visit actual fast fo
 order specific items, eat them, and check them off using the client. Your progress sends items
 to other players in the multiworld.
 
-**Note: This world is not recommended for synchronous games or races!** 
+**Note: This world is not recommended for synchronous games or races!**
 
 ## Installation
 
-Save the `.apworld` file into the `custom_worlds` folder inside your Archipelago installation.
+1. Drop `fast_foodipelago.apworld` into the `custom_worlds` folder inside your Archipelago installation.
+2. Drop `FastFoodClient.py` into the root of your Archipelago installation (same folder as `Launcher.py`).
 
 ## Configuring Your YAML
 
-Generate a template YAML from the Archipelago website or Launcher, then adjust options such as:
+Download the template YAML from the release and adjust options to taste:
 
-- **Goal** — calories, item count, or both
-- **Number of Items** — how many items you must eat to win
-- **Calorie Goal** — total calories required (if goal includes calories)
-- **Starting Restaurants** — how many restaurants are unlocked from the start
-- **Excluded Restaurants** — restaurants you want removed from the pool
-- **Allowed Pizza Sizes** — which pizza sizes are eligible (Small / Medium / Large)
-- **Calorie Cap Per Item** — exclude items above a calorie threshold (e.g. 2000 to skip giant brownies)
-- **Min Calories Per Item** — exclude items below a calorie threshold (e.g. 200 to skip trivial drinks)
+- **Goal** — `calories`, `items`, or `both` (default)
+- **Calorie Goal** — total calories required when goal includes calories (default: 2000)
+- **Number of Items** — how many items you must eat when goal includes items (default: 10)
+- **Starting Restaurants** — how many restaurants are unlocked from the start (default: 2)
+- **Max Restaurants** — cap on how many restaurants appear in your game (default: 4)
+- **Excluded Restaurants** — restaurants you never want in your pool
+- **Allowed Pizza Sizes** — which sizes are eligible for pizza restaurants (Small / Medium / Large)
+- **Calorie Cap Per Item** — exclude items above this calorie count (0 = no cap)
+- **Min Calories Per Item** — exclude items below this calorie count (0 = no minimum)
+- **Excess Items** — extra locations beyond your goal, so you can skip some items
 
 ## Playing
 
 1. After the multiworld is generated, open the **Fast Foodipelago Client** from the Archipelago Launcher.
 2. Connect to the server: `/connect <host>:<port>` then enter your slot name when prompted.
-3. Run `/list` to see all your required items and their numbers.
+3. Run `/tracker` to see your available items and their numbers.
 4. Go to the restaurant, order the item, eat it IRL, then run `/eat <number>` to check it off.
-5. Run `/tracker` at any time to see your progress toward the goal.
+5. Run `/tracker` again at any time to see updated progress.
 
 ## Commands
 
 | Command | Description |
 |---------|-------------|
-| `/list` | Show all required items with their check numbers |
-| `/eat <n>` | Mark item number `n` as eaten and send the check |
-| `/tracker` | Display current progress toward your goal |
+| `/tracker` | Show progress toward your goal and list available items with numbers |
+| `/eat <n>` | Mark available item number `n` as eaten and send the check |
+| `/list` | Show all items you have eaten so far |
 
 ## Notes
 
 - Items are locked to specific restaurants in **Specific** mode (default). In **Generic** mode,
   items use a plain description and can be fulfilled at any restaurant carrying that item type.
 - Starting restaurants are accessible immediately. Other restaurants unlock when you receive
-  their Access item from the multiworld.
-- You can reconnect at any time — the client will resync your checked locations automatically.
+  their `<Restaurant> Access` item from the multiworld.
+- Locked items show as `[LOCKED]` in `/tracker` — you cannot eat them until the restaurant unlocks.
+- You can reconnect at any time — the client resyncs your checked locations automatically.
