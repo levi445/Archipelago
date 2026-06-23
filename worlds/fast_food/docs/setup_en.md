@@ -8,10 +8,19 @@ to other players in the multiworld.
 
 **Note: This world is not recommended for synchronous games or races!**
 
+## Requirements
+
+Fast Foodipelago requires Archipelago **running from source**. The pre-built installer (`.exe` files) does
+not support custom clients. See [Running from Source](https://github.com/ArchipelagoMW/Archipelago/blob/main/docs/running%20from%20source.md)
+if you haven't done this before.
+
 ## Installation
 
-1. Drop `fast_foodipelago.apworld` into the `custom_worlds` folder inside your Archipelago installation.
-2. Drop `FastFoodClient.py` into the root of your Archipelago installation (same folder as `Launcher.py`).
+1. Drop `fast_foodipelago.apworld` into the `custom_worlds` folder inside your Archipelago source folder.
+2. Drop `FastFoodClient.py` into the root of your Archipelago source folder (same folder as `Launcher.py`).
+
+The **Fast Foodipelago Client** button will then appear in the Archipelago Launcher. Alternatively, you can
+run the client directly: `python FastFoodClient.py`.
 
 ## Configuring Your YAML
 
@@ -30,7 +39,7 @@ Download the template YAML from the release and adjust options to taste:
 
 ## Playing
 
-1. After the multiworld is generated, open the **Fast Foodipelago Client** from the Archipelago Launcher.
+1. After the multiworld is generated, open the **Fast Foodipelago Client** from the Archipelago Launcher, or run `python FastFoodClient.py` directly.
 2. Connect to the server: `/connect <host>:<port>` then enter your slot name when prompted.
 3. Run `/tracker` to see your available items and their numbers.
 4. Go to the restaurant, order the item, eat it IRL, then run `/eat <number>` to check it off.
