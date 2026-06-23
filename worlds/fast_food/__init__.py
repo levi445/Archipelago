@@ -89,9 +89,8 @@ class FastFoodWorld(World):
                 remaining_gap -= pick
 
         self.calorie_item_names = calorie_names
-
-        calorie_item_values = {f"{d} Calories": d for d in self._CALORIE_DENOMS}
-        total_cal_items = sum(calorie_item_values.get(n, 0) for n in calorie_names)
+        self.calorie_item_values = {f"{d} Calories": d for d in self._CALORIE_DENOMS}
+        total_cal_items = sum(self.calorie_item_values.get(n, 0) for n in calorie_names)
         self.effective_cal_goal = min(
             self.options.calorie_goal.value,
             self.total_food_calories + total_cal_items,
@@ -216,6 +215,20 @@ class FastFoodWorld(World):
             name_count[loc.generic_name] = name_count.get(loc.generic_name, 0) + 1
             chosen_ids.add(id(loc))
 
+        # Guarantee minimum items per restaurant FIRST so later phases can't consume those slots.
+        min_per = self.options.min_items_per_restaurant.value
+        if min_per > 0:
+            for restaurant in self.restaurant_pool:
+                if len(chosen) >= needed:
+                    break
+                for loc in shuffled:
+                    if per_rest.get(restaurant, 0) >= min_per:
+                        break
+                    if len(chosen) >= needed:
+                        break
+                    if loc.restaurant == restaurant and id(loc) not in chosen_ids and can_add(loc):
+                        add(loc)
+
         use_meals = (
             self.options.attempt_to_create_meals.value
             and not self.options.exclude_food.value
@@ -263,20 +276,6 @@ class FastFoodWorld(World):
                     add(loc)
                     starter_count += 1
 
-        # Guarantee minimum items per restaurant (picks as many as available if pool is short).
-        min_per = self.options.min_items_per_restaurant.value
-        if min_per > 0:
-            for restaurant in self.restaurant_pool:
-                if len(chosen) >= needed:
-                    break
-                for loc in shuffled:
-                    if per_rest.get(restaurant, 0) >= min_per:
-                        break
-                    if len(chosen) >= needed:
-                        break
-                    if loc.restaurant == restaurant and id(loc) not in chosen_ids and can_add(loc):
-                        add(loc)
-
         # Fill remaining slots from the full pool.
         for loc in shuffled:
             if len(chosen) >= needed:
@@ -305,6 +304,16 @@ class FastFoodWorld(World):
         if not pool:
             raise Exception(
                 "Fast Foodipelago: item pool is empty — check your exclusion/banned settings."
+            )
+
+        min_per = self.options.min_items_per_restaurant.value
+        needed  = self.options.number_of_items.value + self.options.excess_items.value
+        if min_per > 0 and needed < len(self.restaurant_pool) * min_per:
+            raise Exception(
+                f"Fast Foodipelago: number_of_items + excess_items ({needed}) is too low to guarantee "
+                f"min_items_per_restaurant ({min_per}) across all {len(self.restaurant_pool)} restaurants "
+                f"(need at least {len(self.restaurant_pool) * min_per}). "
+                f"Raise number_of_items, lower min_items_per_restaurant, or reduce max_restaurants."
             )
 
         chosen = self.pick_required(pool, prioritize=self.starting_restaurants)
@@ -391,7 +400,7 @@ class FastFoodWorld(World):
                 }
                 for loc in self.required_locations
             ],
-            "calorie_item_values":  calorie_item_values,
+            "calorie_item_values":  self.calorie_item_values,
             "restaurants":          self.restaurant_pool,
             "starting_restaurants": self.starting_restaurants,
         }
