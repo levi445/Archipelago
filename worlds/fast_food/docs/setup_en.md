@@ -10,17 +10,16 @@ to other players in the multiworld.
 
 ## Requirements
 
-Fast Foodipelago requires Archipelago **running from source**. The pre-built installer (`.exe` files) does
-not support custom clients. See [Running from Source](https://github.com/ArchipelagoMW/Archipelago/blob/main/docs/running%20from%20source.md)
-if you haven't done this before.
+- [Archipelago](https://github.com/ArchipelagoMW/Archipelago/releases/latest) (official installer is fine)
+- `fast_foodipelago.apworld` and `FastFoodClient.py` from the [Fast Foodipelago release](https://github.com/levi445/fast-foodipelago/releases/latest)
 
 ## Installation
 
-1. Drop `fast_foodipelago.apworld` into the `custom_worlds` folder inside your Archipelago source folder.
-2. Drop `FastFoodClient.py` into the root of your Archipelago source folder (same folder as `Launcher.py`).
+1. Open the Archipelago Launcher.
+2. Click **Install APWorld** and select `fast_foodipelago.apworld`.
+3. Drop `FastFoodClient.py` into your Archipelago install folder (the same folder as `ArchipelagoLauncher.exe`, typically `C:\ProgramData\Archipelago`).
 
-The **Fast Foodipelago Client** button will then appear in the Archipelago Launcher. Alternatively, you can
-run the client directly: `python FastFoodClient.py`.
+The **Fast Foodipelago Client** button will then appear in the Archipelago Launcher.
 
 ## Configuring Your YAML
 
