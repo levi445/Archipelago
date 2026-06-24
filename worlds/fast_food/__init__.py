@@ -49,6 +49,7 @@ class FastFoodWorld(World):
 
     required_locations:   List[FastFoodLocationData]
     restaurant_pool:      List[str]
+    active_restaurants:   List[str]
     starting_restaurants: List[str]
     menu_locations:       List[FastFoodLocationData]
     total_food_calories:  int
@@ -72,7 +73,7 @@ class FastFoodWorld(World):
         for r in self.starting_restaurants:
             self.multiworld.push_precollected(self.create_item(f"{r} Access"))
 
-        available    = list(set(self.restaurant_pool) - set(self.starting_restaurants))
+        available    = [r for r in self.active_restaurants if r not in self.starting_restaurants]
         access_items = [f"{r} Access" for r in available]
 
         n_filler      = max(0, len(self.required_locations) - len(access_items))
@@ -260,7 +261,7 @@ class FastFoodWorld(World):
                     if len(chosen) >= needed:
                         break
                     for loc in shuffled:
-                        if loc.restaurant == restaurant and can_add(loc):
+                        if loc.restaurant == restaurant and id(loc) not in chosen_ids and can_add(loc):
                             add(loc)
                             break
 
@@ -294,6 +295,7 @@ class FastFoodWorld(World):
     def generate_early(self) -> None:
         self.required_locations   = []
         self.restaurant_pool      = []
+        self.active_restaurants   = []
         self.starting_restaurants = []
         self.menu_locations       = []
         self.total_food_calories  = 0
@@ -323,6 +325,8 @@ class FastFoodWorld(World):
             )
 
         self.required_locations = chosen
+        chosen_restaurants = {loc.restaurant for loc in chosen}
+        self.active_restaurants = [r for r in self.restaurant_pool if r in chosen_restaurants]
 
         starting_pool = [loc for loc in chosen if loc.restaurant in self.starting_restaurants]
         if not starting_pool:
@@ -357,7 +361,7 @@ class FastFoodWorld(World):
                 FastFoodLocation(self.player, loc_name, loc_id, menu_region)
             )
 
-        for restaurant in self.restaurant_pool:
+        for restaurant in self.active_restaurants:
             region = Region(restaurant, self.player, self.multiworld)
             self.multiworld.regions.append(region)
 
@@ -401,6 +405,6 @@ class FastFoodWorld(World):
                 for loc in self.required_locations
             ],
             "calorie_item_values":  self.calorie_item_values,
-            "restaurants":          self.restaurant_pool,
+            "restaurants":          self.active_restaurants,
             "starting_restaurants": self.starting_restaurants,
         }
